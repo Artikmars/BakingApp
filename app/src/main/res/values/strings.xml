@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Baking App</string>
     <string name="nutella_pie">Nutella Pie</string>
+    <string name="title_step_list">Steps</string>
+    <string name="title_step_detail">Step Detail</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="step_id">%1$d. %2$s</string>
 </resources>

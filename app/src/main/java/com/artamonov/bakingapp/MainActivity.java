@@ -1,5 +1,6 @@
 package com.artamonov.bakingapp;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,8 +15,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.artamonov.bakingapp.data.Recipes;
-
-import org.json.JSONArray;
+import com.artamonov.bakingapp.data.StepListActivity;
 
 import java.io.IOException;
 import java.util.List;
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//        final LinearLayoutManager layoutManager = new LinearLayoutManager(recyclerView.getContext());
+        //  final LinearLayoutManager layoutManager = new LinearLayoutManager(recyclerView.getContext());
         //  layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView = findViewById(R.id.rvBaking);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
                         runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
-                                              parseJSONData(responseJSON);
+                                              parseJSONRecipes(responseJSON);
                                           }
                                       }
                         );
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
 
     }
 
-    private void parseJSONData(String responseJSON) {
+    private void parseJSONRecipes(String responseJSON) {
 
         RecipesParser.parseJSONRecipes(responseJSON);
         populateRecipesImages(RecipesParser.recipesList);
@@ -124,6 +124,15 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
         }
     }
 
+    private void parseJSONIngredientsSteps(String responseJSON) {
+
+       // RecipesParser.parseJSONIngredientsSteps(responseJSON);
+        populateRecipesImages(RecipesParser.recipesList);
+        if (RecipesParser.recipesList != null) {
+            RecipeRecyclerViewAdapter recipeRecyclerViewAdapter = new RecipeRecyclerViewAdapter(MainActivity.this, RecipesParser.recipesList, this);
+            recyclerView.setAdapter(recipeRecyclerViewAdapter);
+        }
+    }
     private List<Recipes> populateRecipesImages(List<Recipes> recipesList) {
 
         for (int i = 0; i < recipesList.size(); i++) {
@@ -149,6 +158,10 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
 
     @Override
     public void onItemClick(int position) {
+
+        RecipesParser.parseJSONIngredientsSteps(responseJSON, position);
+        Intent intent = new Intent(this, StepListActivity.class);
+        startActivity(intent);
 
     }
 }
