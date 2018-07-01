@@ -68,6 +68,16 @@ public class Recipes {
 
     private String stepThumbnailUrl;
 
+    public Drawable getStepThumbnail() {
+        return stepThumbnail;
+    }
+
+    public void setStepThumbnail(Drawable stepThumbnail) {
+        this.stepThumbnail = stepThumbnail;
+    }
+
+    private Drawable stepThumbnail;
+
     public Integer getRecipeId() {
         return recipeId;
     }

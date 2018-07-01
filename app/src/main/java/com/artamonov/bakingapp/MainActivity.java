@@ -11,10 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.artamonov.bakingapp.data.Recipes;
+import com.artamonov.bakingapp.data.StepDetailFragment;
 import com.artamonov.bakingapp.data.StepListActivity;
 
 import java.io.IOException;
@@ -115,41 +117,50 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
     }
 
     private void parseJSONRecipes(String responseJSON) {
-
+        Log.i(TAG, "MainActivity: parseJSONRecipes");
         RecipesParser.parseJSONRecipes(responseJSON);
         populateRecipesImages(RecipesParser.recipesList);
         if (RecipesParser.recipesList != null) {
-            RecipeRecyclerViewAdapter recipeRecyclerViewAdapter = new RecipeRecyclerViewAdapter(MainActivity.this, RecipesParser.recipesList, this);
+            RecipeRecyclerViewAdapter recipeRecyclerViewAdapter =
+                    new RecipeRecyclerViewAdapter(MainActivity.this,
+                            RecipesParser.recipesList, this);
             recyclerView.setAdapter(recipeRecyclerViewAdapter);
         }
     }
 
     private void parseJSONIngredientsSteps(String responseJSON) {
 
-       // RecipesParser.parseJSONIngredientsSteps(responseJSON);
+        // RecipesParser.parseJSONIngredientsSteps(responseJSON);
         populateRecipesImages(RecipesParser.recipesList);
         if (RecipesParser.recipesList != null) {
-            RecipeRecyclerViewAdapter recipeRecyclerViewAdapter = new RecipeRecyclerViewAdapter(MainActivity.this, RecipesParser.recipesList, this);
+            RecipeRecyclerViewAdapter recipeRecyclerViewAdapter =
+                    new RecipeRecyclerViewAdapter(MainActivity.this,
+                            RecipesParser.recipesList, this);
             recyclerView.setAdapter(recipeRecyclerViewAdapter);
         }
     }
-    private List<Recipes> populateRecipesImages(List<Recipes> recipesList) {
 
+    private List<Recipes> populateRecipesImages(List<Recipes> recipesList) {
+        Log.i(TAG, "MainActivity: populateRecipesImages");
         for (int i = 0; i < recipesList.size(); i++) {
 
             switch (i) {
                 case 0:
                     recipesList.get(i).setRecipeImage(ResourcesCompat.getDrawable(getResources(),
-                            R.drawable.nutellapie_blur, null));  break;
+                            R.drawable.nutellapie_blur, null));
+                    break;
                 case 1:
                     recipesList.get(1).setRecipeImage(ResourcesCompat.getDrawable(getResources(),
-                            R.drawable.brownies_blur, null)); break;
+                            R.drawable.brownies_blur, null));
+                    break;
                 case 2:
                     recipesList.get(i).setRecipeImage(ResourcesCompat.getDrawable(getResources(),
-                            R.drawable.yellowcake_blur, null)); break;
+                            R.drawable.yellowcake_blur, null));
+                    break;
                 case 3:
                     recipesList.get(i).setRecipeImage(ResourcesCompat.getDrawable(getResources(),
-                            R.drawable.cheesecake_blur, null)); break;
+                            R.drawable.cheesecake_blur, null));
+                    break;
             }
         }
         return recipesList;
@@ -158,10 +169,26 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
 
     @Override
     public void onItemClick(int position) {
-
+        Log.i(TAG, "MainActivity: onItemClick");
         RecipesParser.parseJSONIngredientsSteps(responseJSON, position);
+        populateStepsThumbnails(RecipesParser.stepsList);
         Intent intent = new Intent(this, StepListActivity.class);
+        intent.putExtra(StepDetailFragment.ARG_ITEM_ID, position);
         startActivity(intent);
 
     }
+
+    private List<Recipes> populateStepsThumbnails(List<Recipes> stepsList) {
+        Log.i(TAG, "MainActivity: populateStepsThumbnails");
+        for (int i = 0; i < stepsList.size(); i++) {
+
+            if (TextUtils.isEmpty(stepsList.get(i).getStepVideoUrl())) {
+                stepsList.get(i).setStepThumbnail(ResourcesCompat.getDrawable(getResources(),
+                        R.drawable.nutellapie, null));
+                break;
+            }
+        }
+        return stepsList;
+    }
+
 }
