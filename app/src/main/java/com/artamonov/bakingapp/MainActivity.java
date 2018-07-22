@@ -185,7 +185,6 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
             if (TextUtils.isEmpty(stepsList.get(i).getStepVideoUrl())) {
                 stepsList.get(i).setStepThumbnail(ResourcesCompat.getDrawable(getResources(),
                         R.drawable.nutellapie, null));
-                break;
             }
         }
         return stepsList;

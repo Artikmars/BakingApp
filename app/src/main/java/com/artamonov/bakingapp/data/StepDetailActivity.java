@@ -36,6 +36,8 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import java.net.Inet4Address;
+
 import static com.artamonov.bakingapp.MainActivity.TAG;
 
 /**
@@ -57,8 +59,10 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
-      /*  Toolbar toolbar = findViewById(R.id.detail_toolbar);
-        setSupportActionBar(toolbar);*/
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         playerView = findViewById(R.id.playerView);
         tvStepDescription = findViewById(R.id.tv_step_description);
 
@@ -78,9 +82,11 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
         // http://developer.android.com/guide/components/fragments.html
         //
         if (savedInstanceState == null) {
+            Log.w(TAG, "in StepDetailActivity:  savedInstanceState == NULL!!!!!!!!!!!");
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Intent intent = getIntent();
+
             Integer position = intent.getIntExtra(StepDetailFragment.ARG_ITEM_ID, 0);
             Log.i(TAG, "in StepDetailActivity: intent(position): " + position);
             Bundle arguments = new Bundle();

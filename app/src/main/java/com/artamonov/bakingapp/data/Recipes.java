@@ -4,7 +4,6 @@ import android.graphics.drawable.Drawable;
 
 import java.util.List;
 
-
 public class Recipes {
 
     private Integer recipeId;
@@ -22,11 +21,13 @@ public class Recipes {
     private String stepDescription;
     private String stepVideoUrl;
     private List<Ingredients> ingredientsList;
+    private List<Steps> stepsList;
+    private String stepThumbnailUrl;
+    private Drawable stepThumbnail;
 
     public Recipes(Drawable recipeImage) {
         this.recipeImage = recipeImage;
     }
-
 
     public Recipes() {
 
@@ -54,10 +55,6 @@ public class Recipes {
         this.stepsList = stepsList;
     }
 
-    private List<Steps> stepsList;
-
-
-
     public String getStepThumbnailUrl() {
         return stepThumbnailUrl;
     }
@@ -66,8 +63,6 @@ public class Recipes {
         this.stepThumbnailUrl = stepThumbnailUrl;
     }
 
-    private String stepThumbnailUrl;
-
     public Drawable getStepThumbnail() {
         return stepThumbnail;
     }
@@ -75,8 +70,6 @@ public class Recipes {
     public void setStepThumbnail(Drawable stepThumbnail) {
         this.stepThumbnail = stepThumbnail;
     }
-
-    private Drawable stepThumbnail;
 
     public Integer getRecipeId() {
         return recipeId;
@@ -165,7 +158,6 @@ public class Recipes {
     public void setStepVideoUrl(String stepVideoUrl) {
         this.stepVideoUrl = stepVideoUrl;
     }
-
 
 
 }
