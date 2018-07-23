@@ -53,19 +53,9 @@ public class RecipeWidgetFactory implements RemoteViewsFactory {
     public RemoteViews getViewAt(int position) {
         RemoteViews rView = new RemoteViews(context.getPackageName(),
                 R.layout.ingredients_widget_item);
-       /* RecipesParser.parseJSONIngredientsSteps(responseJSON, position);
-        StringBuilder ingredientDescription = null;
-        for (int i = 0; i < widgetIngredientsList.size(); i++){
-            String ingredientName = widgetIngredientsList.get(i).getIngredientName();
-            String ingredientMeasure = widgetIngredientsList.get(i).getIngredientMeasure();
-            Integer ingredientQuantity = widgetIngredientsList.get(i).getIngredientQuantity();
-            ingredientDescription.append(", ").append(String.format(context
-                            .getResources().getString(R.string.ingredient_description), ingredientName,
-                    ingredientQuantity, ingredientMeasure));
-        }*/
         rView.setTextViewText(R.id.tvItemRecipe, widgetRecipesList.get(position).getRecipeName());
         Intent clickIntent = new Intent();
-        clickIntent.putExtra(WidgetProvider.ITEM_POSITION, position);
+        clickIntent.putExtra(RecipeWidgetProvider.ITEM_POSITION, position);
         rView.setOnClickFillInIntent(R.id.tvItemRecipe, clickIntent);
         return rView;
     }

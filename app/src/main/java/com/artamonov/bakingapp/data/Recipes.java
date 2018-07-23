@@ -2,15 +2,12 @@ package com.artamonov.bakingapp.data;
 
 import android.graphics.drawable.Drawable;
 
-import java.util.List;
-
 public class Recipes {
 
     private Integer recipeId;
     private String recipeName;
     private String recipeServings;
     private Drawable recipeImage;
-
 
     private String ingredientName;
     private Integer ingredientQuantity;
@@ -20,8 +17,6 @@ public class Recipes {
     private String stepShortDescription;
     private String stepDescription;
     private String stepVideoUrl;
-    private List<Ingredients> ingredientsList;
-    private List<Steps> stepsList;
     private String stepThumbnailUrl;
     private Drawable stepThumbnail;
 
@@ -33,27 +28,6 @@ public class Recipes {
 
     }
 
-    public List<Ingredients> getIngredientsList() {
-        return ingredientsList;
-    }
-
-    public void setIngredientsList(List<Ingredients> ingredientsList) {
-        this.ingredientsList = ingredientsList;
-    }
-
-    public void setIngredientsList(String ingredientsName, String ingredientsMeasure, Integer ingredientsQuantity) {
-        this.ingredientName = ingredientsName;
-        this.ingredientMeasure = ingredientsMeasure;
-        this.ingredientQuantity = ingredientsQuantity;
-    }
-
-    public List<Steps> getStepsList() {
-        return stepsList;
-    }
-
-    public void setStepsList(List<Steps> stepsList) {
-        this.stepsList = stepsList;
-    }
 
     public String getStepThumbnailUrl() {
         return stepThumbnailUrl;
@@ -71,9 +45,6 @@ public class Recipes {
         this.stepThumbnail = stepThumbnail;
     }
 
-    public Integer getRecipeId() {
-        return recipeId;
-    }
 
     public void setRecipeId(Integer recipeId) {
         this.recipeId = recipeId;
@@ -87,9 +58,6 @@ public class Recipes {
         this.recipeName = recipeName;
     }
 
-    public String getRecipeServings() {
-        return recipeServings;
-    }
 
     public void setRecipeServings(String recipeServings) {
         this.recipeServings = recipeServings;
@@ -125,10 +93,6 @@ public class Recipes {
 
     public void setIngredientMeasure(String ingredientMeasure) {
         this.ingredientMeasure = ingredientMeasure;
-    }
-
-    public Integer getStepId() {
-        return stepId;
     }
 
     public void setStepId(Integer stepId) {

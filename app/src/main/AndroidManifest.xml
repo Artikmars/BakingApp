@@ -27,29 +27,25 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".data.StepListActivity"
+            android:name=".StepListActivity"
             android:label="@string/title_step_list"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".data.StepDetailActivity"
+            android:name=".StepDetailActivity"
             android:label="@string/title_step_detail"
-            android:parentActivityName=".data.StepListActivity"
+            android:parentActivityName=".StepListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.artamonov.bakingapp.data.StepListActivity" />
+                android:value="com.artamonov.bakingapp.StepListActivity" />
         </activity>
 
         <service
             android:name=".RecipeWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS">
         </service>
-        <service
-            android:name=".IngredientsWidgetService"
-            android:permission="android.permission.BIND_REMOTEVIEWS">
-        </service>
-        <receiver android:name=".WidgetProvider">
+        <receiver android:name=".RecipeWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

@@ -91,11 +91,6 @@ public class RecipesParser {
                 ingredientList.add(ingredients);
             }
 
-         /*   Log.i(TAG, "onParse: ingredientList " + ingredientList.get(0).getIngredientName() + " ");
-            Log.i(TAG, "onParse: ingredientList " + ingredientList.get(0).getIngredientMeasure() + " ");
-            Log.i(TAG, "onParse: ingredientList " + ingredientList.get(0).getIngredientQuantity() + " ");*/
-
-            //   }
 
             JSONArray jsonStepsArray = jsonRecipeObject.getJSONArray("steps");
             Log.i(TAG, "jsonStepsArray.length - " + jsonStepsArray.length() + " ");
@@ -117,10 +112,7 @@ public class RecipesParser {
                 steps.setStepVideoUrl(stepVideoUrl);
                 stepsList.add(steps);
 
-                //Log.i(TAG, "onParse: stepsList " + stepsList.get(j).getStepDescription() + " ");
                 Log.i(TAG, "onParse: stepsList - getStepShortDescription: " + stepsList.get(j).getStepShortDescription() + " ");
-                //  Log.i(TAG, "onParse: stepsList " + stepsList.get(j).getStepThumbnailUrl() + " ");
-                // Log.i(TAG, "onParse: stepsList " + stepsList.get(j).getStepId() + " ");
 
             }
         } catch (JSONException e) {

@@ -1,4 +1,4 @@
-package com.artamonov.bakingapp.data;
+package com.artamonov.bakingapp;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,9 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.artamonov.bakingapp.MainActivity;
-import com.artamonov.bakingapp.R;
-import com.artamonov.bakingapp.RecipesParser;
+import com.artamonov.bakingapp.data.Recipes;
 
 import java.util.List;
 
@@ -46,12 +44,6 @@ public class StepListActivity extends AppCompatActivity {
         toolbar.setTitle(getTitle());
 
 
-        RecyclerView recyclerView = findViewById(R.id.rv_step_list);
-        Log.i(TAG, "StepListActivity - recyclerView: " + recyclerView);
-
-        recyclerView.setAdapter(new StepRecyclerViewAdapter(StepListActivity.this,
-                RecipesParser.stepsList, MainActivity.responseJSON));
-
         if (findViewById(R.id.step_detail_container) != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-w900dp).
@@ -59,6 +51,11 @@ public class StepListActivity extends AppCompatActivity {
             // activity should be in two-pane mode.
             mTwoPane = false;
         }
+
+        RecyclerView recyclerView = findViewById(R.id.rv_step_list);
+        Log.i(TAG, "StepListActivity - recyclerView: " + recyclerView);
+        recyclerView.setAdapter(new StepRecyclerViewAdapter(StepListActivity.this,
+                RecipesParser.stepsList, MainActivity.responseJSON));
 
     }
 
@@ -94,13 +91,14 @@ public class StepListActivity extends AppCompatActivity {
                     holder.stepShortDescription.setText(context.getResources()
                             .getString(R.string.ingredients));
                     break;
-                case 1: stepShortDescription = stepsList.get(position-1).getStepShortDescription();
+                case 1:
+                    stepShortDescription = stepsList.get(position - 1).getStepShortDescription();
                     holder.stepShortDescription.setText(stepShortDescription);
                     break;
                 default:
                     String stepShortDescriptionWithId = String.format(context.getResources()
-                            .getString(R.string.step_id), position - 1, stepsList.get(position-1)
-                    .getStepShortDescription());
+                            .getString(R.string.step_id), position - 1, stepsList.get(position - 1)
+                            .getStepShortDescription());
                     holder.stepShortDescription.setText(stepShortDescriptionWithId);
                     break;
             }

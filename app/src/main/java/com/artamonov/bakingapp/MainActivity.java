@@ -16,8 +16,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.artamonov.bakingapp.data.Recipes;
-import com.artamonov.bakingapp.data.StepDetailFragment;
-import com.artamonov.bakingapp.data.StepListActivity;
 
 import java.io.IOException;
 import java.util.List;
@@ -119,18 +117,6 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
     private void parseJSONRecipes(String responseJSON) {
         Log.i(TAG, "MainActivity: parseJSONRecipes");
         RecipesParser.parseJSONRecipes(responseJSON);
-        populateRecipesImages(RecipesParser.recipesList);
-        if (RecipesParser.recipesList != null) {
-            RecipeRecyclerViewAdapter recipeRecyclerViewAdapter =
-                    new RecipeRecyclerViewAdapter(MainActivity.this,
-                            RecipesParser.recipesList, this);
-            recyclerView.setAdapter(recipeRecyclerViewAdapter);
-        }
-    }
-
-    private void parseJSONIngredientsSteps(String responseJSON) {
-
-        // RecipesParser.parseJSONIngredientsSteps(responseJSON);
         populateRecipesImages(RecipesParser.recipesList);
         if (RecipesParser.recipesList != null) {
             RecipeRecyclerViewAdapter recipeRecyclerViewAdapter =
