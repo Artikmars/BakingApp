@@ -3,7 +3,6 @@ package com.artamonov.bakingapp;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +12,10 @@ import com.artamonov.bakingapp.data.Recipes;
 
 import java.util.List;
 
-import static com.artamonov.bakingapp.MainActivity.TAG;
-
 public class IngredientsRecyclerViewAdapter extends RecyclerView.Adapter<IngredientsRecyclerViewAdapter.ViewHolder> {
 
-    private List<Recipes> ingredientsList;
-    private Context context;
+    private final List<Recipes> ingredientsList;
+    private final Context context;
 
     public IngredientsRecyclerViewAdapter(List<Recipes> ingredientsList, Context context) {
         this.ingredientsList = ingredientsList;
@@ -35,8 +32,6 @@ public class IngredientsRecyclerViewAdapter extends RecyclerView.Adapter<Ingredi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Log.i(TAG, "onBindViewHolder - position: " + position);
-
         String ingredientName = ingredientsList.get(position).getIngredientName();
         String ingredientMeasure = ingredientsList.get(position).getIngredientMeasure();
         Integer ingredientQuantity = ingredientsList.get(position).getIngredientQuantity();
@@ -48,7 +43,6 @@ public class IngredientsRecyclerViewAdapter extends RecyclerView.Adapter<Ingredi
 
     @Override
     public int getItemCount() {
-        Log.i(TAG, "getItemCount - ingredientsList.size(): " + ingredientsList.size());
         return ingredientsList.size();
     }
 
@@ -56,7 +50,7 @@ public class IngredientsRecyclerViewAdapter extends RecyclerView.Adapter<Ingredi
 
         private final TextView ingredientsDescription;
 
-        public ViewHolder(View itemView) {
+        private ViewHolder(View itemView) {
             super(itemView);
             ingredientsDescription = itemView.findViewById(R.id.step_short_description);
         }

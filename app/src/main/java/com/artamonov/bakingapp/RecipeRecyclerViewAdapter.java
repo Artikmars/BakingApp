@@ -17,7 +17,7 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
 
     private static ItemClickListener listener;
     private final List<Recipes> recipesList;
-    private Context context;
+    private final Context context;
 
     public RecipeRecyclerViewAdapter(Context context, List<Recipes> recipesList, ItemClickListener itemClickListener) {
         this.context = context;
@@ -28,7 +28,7 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_recipe_steps_list,
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recipe_list,
                 viewGroup, false);
         return new ViewHolder(view);
     }

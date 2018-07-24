@@ -30,22 +30,17 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
 
     public static final String TAG = "myLogs";
     public static String responseJSON;
-    public static List<Recipes> recipesList;
-    Request request;
-    RecyclerView recyclerView;
-    Toolbar toolbar;
-    String url = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //  final LinearLayoutManager layoutManager = new LinearLayoutManager(recyclerView.getContext());
-        //  layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView = findViewById(R.id.rvBaking);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
+        String url = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
         getJSONData(url);
     }
 
@@ -53,14 +48,13 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
 
         if (NetworkUtils.isNetworkAvailable(getApplicationContext())) {
             OkHttpClient okHttpClient = new OkHttpClient();
-            request = new Request.Builder()
+            Request request = new Request.Builder()
                     .url(url)
                     .build();
 
             okHttpClient.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    Log.i(TAG, "onFailure: " + e);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -76,8 +70,6 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
                     Log.i(TAG, "response: " + response.message());
                     if (response.isSuccessful()) {
                         responseJSON = response.body().string();
-                        // Log.i(TAG, "responseJSON - com.artamonov.bakingapp.MainActivity: " + responseJSON);
-                        //  Log.i(TAG, "responseJSON - com.artamonov.bakingapp.MainActivity: " + response.body());
 
                         runOnUiThread(new Runnable() {
                                           @Override
@@ -88,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
                         );
 
                     } else {
-                        Log.i(TAG, "Response is not successful ");
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -102,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
 
 
         } else {
-            Log.i(TAG, "No Internet Connection");
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -115,7 +105,6 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
     }
 
     private void parseJSONRecipes(String responseJSON) {
-        Log.i(TAG, "MainActivity: parseJSONRecipes");
         RecipesParser.parseJSONRecipes(responseJSON);
         populateRecipesImages(RecipesParser.recipesList);
         if (RecipesParser.recipesList != null) {
@@ -126,8 +115,7 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
         }
     }
 
-    private List<Recipes> populateRecipesImages(List<Recipes> recipesList) {
-        Log.i(TAG, "MainActivity: populateRecipesImages");
+    private void populateRecipesImages(List<Recipes> recipesList) {
         for (int i = 0; i < recipesList.size(); i++) {
 
             switch (i) {
@@ -149,13 +137,11 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
                     break;
             }
         }
-        return recipesList;
 
     }
 
     @Override
     public void onItemClick(int position) {
-        Log.i(TAG, "MainActivity: onItemClick");
         RecipesParser.parseJSONIngredientsSteps(responseJSON, position);
         populateStepsThumbnails(RecipesParser.stepsList);
         Intent intent = new Intent(this, StepListActivity.class);
@@ -164,8 +150,7 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
 
     }
 
-    private List<Recipes> populateStepsThumbnails(List<Recipes> stepsList) {
-        Log.i(TAG, "MainActivity: populateStepsThumbnails");
+    private void populateStepsThumbnails(List<Recipes> stepsList) {
         for (int i = 0; i < stepsList.size(); i++) {
 
             if (TextUtils.isEmpty(stepsList.get(i).getStepVideoUrl())) {
@@ -173,7 +158,6 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
                         R.drawable.nutellapie, null));
             }
         }
-        return stepsList;
     }
 
 }

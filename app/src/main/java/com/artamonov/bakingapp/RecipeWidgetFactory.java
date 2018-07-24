@@ -1,6 +1,5 @@
 package com.artamonov.bakingapp;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
@@ -16,22 +15,17 @@ import static com.artamonov.bakingapp.MainActivity.responseJSON;
 public class RecipeWidgetFactory implements RemoteViewsFactory {
 
     ArrayList<String> data;
-    List<Recipes> widgetRecipesList;
-   // List<Recipes> widgetIngredientsList;
-    Context context;
-    int widgetID;
+    private List<Recipes> widgetRecipesList;
+    private final Context context;
 
-    RecipeWidgetFactory(Context context, Intent intent) {
+    RecipeWidgetFactory(Context context) {
         this.context = context;
-        widgetID = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID);
         widgetRecipesList = RecipesParser.recipesList;
-       // widgetIngredientsList = RecipesParser.ingredientList;
+        // widgetIngredientsList = RecipesParser.ingredientList;
     }
 
     @Override
     public void onCreate() {
-        // data = new ArrayList<>();
     }
 
     @Override

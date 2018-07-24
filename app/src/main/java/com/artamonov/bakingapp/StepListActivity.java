@@ -1,5 +1,6 @@
 package com.artamonov.bakingapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,7 +37,6 @@ public class StepListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG, "StepListActivity - onCreate ");
         setContentView(R.layout.activity_step_list);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -49,33 +49,38 @@ public class StepListActivity extends AppCompatActivity {
             // large-screen layouts (res/values-w900dp).
             // If this view is present, then the
             // activity should be in two-pane mode.
-            mTwoPane = false;
+            mTwoPane = true;
         }
 
-        RecyclerView recyclerView = findViewById(R.id.rv_step_list);
-        Log.i(TAG, "StepListActivity - recyclerView: " + recyclerView);
-        recyclerView.setAdapter(new StepRecyclerViewAdapter(StepListActivity.this,
-                RecipesParser.stepsList, MainActivity.responseJSON));
+        View recyclerView = findViewById(R.id.step_list);
+        assert recyclerView != null;
+        setupRecyclerView((RecyclerView)recyclerView);
 
+    }
+
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+        recyclerView.setAdapter(new StepRecyclerViewAdapter(this, RecipesParser.stepsList,
+                MainActivity.responseJSON, mTwoPane));
     }
 
     private class StepRecyclerViewAdapter
             extends RecyclerView.Adapter<StepRecyclerViewAdapter.ViewHolder> {
 
-        String json;
-        private List<Recipes> stepsList;
-        private Context context;
+        final String json;
+        private final List<Recipes> stepsList;
+        private final Context context;
+        private final boolean mTwoPane;
 
-        public StepRecyclerViewAdapter(Context context, List<Recipes> stepsList, String json) {
+        private StepRecyclerViewAdapter(Context context, List<Recipes> stepsList, String json, boolean twoPane) {
             this.context = context;
             this.stepsList = stepsList;
+            this.mTwoPane = twoPane;
             this.json = json;
         }
 
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.step_list_content,
                             parent, false);
@@ -83,9 +88,8 @@ public class StepListActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-            Log.i(TAG, "onBindViewHolder - position: " + position);
-            String stepShortDescription = null;
+        public void onBindViewHolder(@NonNull final ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
+            String stepShortDescription;
             switch (position) {
                 case 0:
                     holder.stepShortDescription.setText(context.getResources()
@@ -107,21 +111,17 @@ public class StepListActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     if (mTwoPane) {
-                        Log.i(TAG, "onClick: mTwoPane - true, position: " + holder.getAdapterPosition());
                         Bundle arguments = new Bundle();
-                        arguments.putInt(StepDetailFragment.ARG_ITEM_ID, holder.getAdapterPosition());
+                        arguments.putInt(StepDetailFragment.ARG_ITEM_ID, position);
                         StepDetailFragment fragment = new StepDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.step_detail_container, fragment)
                                 .commit();
                     } else {
-                        Intent i = getIntent();
-                        Integer recipePosition = i.getIntExtra(StepDetailFragment.ARG_ITEM_ID, 0);
-                        Log.i(TAG, "onClick: mTwoPane - false, position: " + holder.getAdapterPosition());
                         Intent intent = new Intent(context, StepDetailActivity.class);
-                        intent.putExtra(StepDetailFragment.ARG_ITEM_ID, holder.getAdapterPosition());
-                        intent.putExtra("recipe position", recipePosition);
+                        intent.putExtra(StepDetailFragment.ARG_ITEM_ID, position);
+                        intent.putExtra("recipe position", position);
                         context.startActivity(intent);
                     }
                 }
@@ -137,7 +137,7 @@ public class StepListActivity extends AppCompatActivity {
 
             private final TextView stepShortDescription;
 
-            public ViewHolder(View itemView) {
+            private ViewHolder(View itemView) {
                 super(itemView);
                 stepShortDescription = itemView.findViewById(R.id.step_short_description);
             }

@@ -5,7 +5,6 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import static com.artamonov.bakingapp.MainActivity.responseJSON;
@@ -15,12 +14,17 @@ import static com.artamonov.bakingapp.MainActivity.responseJSON;
  */
 public class RecipeWidgetProvider extends AppWidgetProvider {
 
-    final String ACTION_ON_CLICK = "com.artamonov.bakingapp.RecipeWidgetProvider.itemonclick";
     final static String ITEM_POSITION = "item_position";
-    public int widgetItemClickedPosition;
+    private final String ACTION_ON_CLICK = "com.artamonov.bakingapp.RecipeWidgetProvider.itemonclick";
 
-    void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+    private static void setList(RemoteViews views, Context context, int appWidgetId) {
+        Intent adapter = new Intent(context, RecipeWidgetService.class);
+        adapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        views.setRemoteAdapter(R.id.lvAppWidget, adapter);
+    }
+
+    private void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
+                                 int appWidgetId) {
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredients_widget_provider);
         setList(views, context, appWidgetId);
@@ -36,19 +40,11 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
         views.setPendingIntentTemplate(R.id.lvAppWidget, listClickPIntent);
     }
 
-    private static void setList(RemoteViews views, Context context, int appWidgetId) {
-        Intent adapter = new Intent(context, RecipeWidgetService.class);
-        adapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        views.setRemoteAdapter(R.id.lvAppWidget, adapter);
-    }
-
-
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
         if (intent.getAction().equalsIgnoreCase(ACTION_ON_CLICK)) {
-            widgetItemClickedPosition = intent.getIntExtra(ITEM_POSITION, -1);
-            Log.w(MainActivity.TAG, "onReceive: itemPos = " + widgetItemClickedPosition);
+            int widgetItemClickedPosition = intent.getIntExtra(ITEM_POSITION, -1);
             if (widgetItemClickedPosition != -1) {
                 RecipesParser.parseJSONIngredientsSteps(responseJSON, widgetItemClickedPosition);
                 Intent ingredientsIntent = new Intent(context, StepListActivity.class);

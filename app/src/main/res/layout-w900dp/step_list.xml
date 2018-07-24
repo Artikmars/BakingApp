@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     android:baselineAligned="false"
@@ -26,6 +27,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         tools:context="com.artamonov.bakingapp.StepListActivity"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         tools:listitem="@layout/step_list_content" />
 
     <FrameLayout
