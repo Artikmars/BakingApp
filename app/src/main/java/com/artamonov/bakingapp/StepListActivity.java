@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.artamonov.bakingapp.data.Recipes;
 
@@ -33,6 +34,7 @@ import static com.artamonov.bakingapp.MainActivity.TAG;
 public class StepListActivity extends AppCompatActivity {
 
     private boolean mTwoPane;
+    private int stepPosition;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,11 +65,13 @@ public class StepListActivity extends AppCompatActivity {
                 MainActivity.responseJSON, mTwoPane));
     }
 
+
+
     private class StepRecyclerViewAdapter
             extends RecyclerView.Adapter<StepRecyclerViewAdapter.ViewHolder> {
 
         final String json;
-        private final List<Recipes> stepsList;
+        public final List<Recipes> stepsList;
         private final Context context;
         private final boolean mTwoPane;
 
@@ -90,6 +94,8 @@ public class StepListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
             String stepShortDescription;
+            stepPosition = position;
+
             switch (position) {
                 case 0:
                     holder.stepShortDescription.setText(context.getResources()
@@ -113,6 +119,7 @@ public class StepListActivity extends AppCompatActivity {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
                         arguments.putInt(StepDetailFragment.ARG_ITEM_ID, position);
+                        arguments.putInt(StepDetailFragment.ARG_ITEM_ID, position);
                         StepDetailFragment fragment = new StepDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -121,7 +128,7 @@ public class StepListActivity extends AppCompatActivity {
                     } else {
                         Intent intent = new Intent(context, StepDetailActivity.class);
                         intent.putExtra(StepDetailFragment.ARG_ITEM_ID, position);
-                        intent.putExtra("recipe position", position);
+                        intent.putExtra(StepDetailFragment.ARG_ITEM_ID_LIST_SIZE, stepsList.size());
                         context.startActivity(intent);
                     }
                 }
@@ -133,7 +140,7 @@ public class StepListActivity extends AppCompatActivity {
             return stepsList.size() + 1;
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
+        class ViewHolder extends RecyclerView.ViewHolder {
 
             private final TextView stepShortDescription;
 
@@ -143,5 +150,7 @@ public class StepListActivity extends AppCompatActivity {
             }
         }
     }
+
+
 
 }

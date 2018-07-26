@@ -16,9 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
@@ -47,6 +47,7 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
+    public static final String ARG_ITEM_ID_LIST_SIZE = "step_list_size";
     private SimpleExoPlayer exoPlayer;
     private SimpleExoPlayerView playerView;
     private Integer stepPosition;
@@ -70,12 +71,6 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
         }
     }
 
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putInt("step_id", stepPosition);
-        super.onSaveInstanceState(outState);
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -113,28 +108,41 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
              * Ingredients Item and not a step item
              */
 
-            Integer stepID = stepPosition - 1;
-            String stepDescription = RecipesParser.stepsList.get(stepID).getStepDescription();
-            String stepVideoUrl = RecipesParser.stepsList.get(stepID).getStepVideoUrl();
-            String stepThumbnailUrl = RecipesParser.stepsList.get(stepID).getStepThumbnailUrl();
+            if (RecipesParser.stepsList != null) {
+                Integer stepID = stepPosition - 1;
+                String stepDescription = RecipesParser.stepsList.get(stepID).getStepDescription();
+                String stepVideoUrl = RecipesParser.stepsList.get(stepID).getStepVideoUrl();
+                String stepThumbnailUrl = RecipesParser.stepsList.get(stepID).getStepThumbnailUrl();
 
-            boolean isThumbnail = !TextUtils.isEmpty(stepThumbnailUrl);
-            if (TextUtils.isEmpty(stepVideoUrl)) {
-                playerView.setVisibility(View.INVISIBLE);
-                ivStepThumbnail.setImageDrawable(RecipesParser.stepsList.get(stepID).getStepThumbnail());
-                if (isThumbnail) {
-                    playerView.setVisibility(View.VISIBLE);
-                    ivStepThumbnail.setVisibility(View.GONE);
-                    initializePlayer(rootView, Uri.parse(stepThumbnailUrl));
+                boolean isThumbnail = !TextUtils.isEmpty(stepThumbnailUrl);
+                if (TextUtils.isEmpty(stepVideoUrl)) {
+                    playerView.setVisibility(View.INVISIBLE);
+                    ivStepThumbnail.setImageDrawable(RecipesParser.stepsList.get(stepID).getStepThumbnail());
+                    if (isThumbnail) {
+                        playerView.setVisibility(View.VISIBLE);
+                        ivStepThumbnail.setVisibility(View.GONE);
+                        initializePlayer(rootView, Uri.parse(stepThumbnailUrl));
+                    }
+                } else {
+                    ivStepThumbnail.setVisibility(View.INVISIBLE);
+                    initializePlayer(rootView, Uri.parse(stepVideoUrl));
                 }
-            } else {
-                ivStepThumbnail.setVisibility(View.INVISIBLE);
-                initializePlayer(rootView, Uri.parse(stepVideoUrl));
-            }
 
-            tvStepDescription.setText(stepDescription);
+                tvStepDescription.setText(stepDescription);
+            }
+        } else {
+            Toast.makeText(getActivity().getApplicationContext(), "Please, try later", Toast.LENGTH_SHORT)
+                    .show();
         }
         return rootView;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (exoPlayer != null) {
+            exoPlayer.release();
+        }
     }
 
 

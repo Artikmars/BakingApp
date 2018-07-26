@@ -5,8 +5,11 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.PlaybackParameters;
@@ -23,6 +26,9 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
  */
 public class StepDetailActivity extends AppCompatActivity implements View.OnClickListener, Player.EventListener {
 
+    private Integer stepPosition;
+    private int stepListSize;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,13 +37,16 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
+        Log.i(MainActivity.TAG, "onCreate: stepPosition - " + stepPosition);
+        Log.i(MainActivity.TAG, "onCreate: stepListSize - " + stepListSize);
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        // SharedPreferences prefs = getSharedPreferences(PREFERENCE_NAME, MODE_PRIVATE);
+        //  stepPosition = prefs.getInt(PREF_KEY, 0);
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
         // (e.g. when rotating the screen from portrait to landscape).
@@ -50,15 +59,29 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
+            Log.i(MainActivity.TAG, "savedInstanceState == NULL! ");
             Intent intent = getIntent();
-            Integer position = intent.getIntExtra(StepDetailFragment.ARG_ITEM_ID, 0);
+            stepPosition = intent.getIntExtra(StepDetailFragment.ARG_ITEM_ID, 0);
+            if (stepPosition == 0) {
+                ImageView ivPreviousStep = findViewById(R.id.ivPreviousStep);
+                ImageView ivNextStep = findViewById(R.id.ivNextStep);
+                ivPreviousStep.setVisibility(View.INVISIBLE);
+                ivNextStep.setVisibility(View.INVISIBLE);
+            }
+            Log.i(MainActivity.TAG, "get stepPosition from Intent: " + stepPosition);
+            stepListSize = intent.getIntExtra(StepDetailFragment.ARG_ITEM_ID_LIST_SIZE, 0);
+            Log.i(MainActivity.TAG, "get stepListSize from Intent: " + stepListSize);
             Bundle arguments = new Bundle();
-            arguments.putInt(StepDetailFragment.ARG_ITEM_ID, position);
+            arguments.putInt(StepDetailFragment.ARG_ITEM_ID, stepPosition);
             StepDetailFragment fragment = new StepDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.step_detail_container, fragment)
                     .commit();
+
+           /* SharedPreferences.Editor editor = getSharedPreferences(PREFERENCE_NAME, MODE_PRIVATE).edit();
+            editor.putInt(PREF_KEY, stepPosition);
+            editor.apply();*/
         }
     }
 
@@ -132,5 +155,62 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onSeekProcessed() {
 
+    }
+
+    public void goToPreviousStep(View view) {
+     /*   Bundle arguments = new Bundle();
+        Integer prevStepPosition = stepPosition - 1;
+        if (prevStepPosition <= stepListSize) {
+            arguments.putInt(StepDetailFragment.ARG_ITEM_ID, prevStepPosition);
+            StepDetailFragment fragment = new StepDetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.step_detail_container, fragment)
+                    .commit();
+        } else {
+            Toast.makeText(getApplicationContext(), "This is the last step",
+                    Toast.LENGTH_SHORT)
+                    .show();
+        }*/
+
+       Log.i(MainActivity.TAG, "in goToPreviousStep");
+        Log.i(MainActivity.TAG, "in goToPreviousStep: stepPosition: "  + stepPosition);
+        Integer prevStepPosition = stepPosition - 1;
+        Log.i(MainActivity.TAG, "in goToPreviousStep: prevStepPosition: "  + prevStepPosition);
+        Log.i(MainActivity.TAG, "in goToPreviousStep: stepListSize: "  + stepListSize);
+        if (prevStepPosition <= stepListSize && stepPosition != 1) {
+            Log.i(MainActivity.TAG, "prevStepPosition <= stepListSize"  );
+            Intent intent = new Intent(this, StepDetailActivity.class);
+            intent.putExtra(StepDetailFragment.ARG_ITEM_ID, prevStepPosition);
+            intent.putExtra(StepDetailFragment.ARG_ITEM_ID_LIST_SIZE, stepListSize);
+            startActivity(intent);
+        } else {
+            Log.i(MainActivity.TAG, "prevStepPosition > stepListSize"  );
+            Toast.makeText(getApplicationContext(), "This is the first step",
+                    Toast.LENGTH_SHORT)
+                    .show();
+        }
+
+    }
+
+
+    public void goToNextStep(View view) {
+        Log.i(MainActivity.TAG, "in goToNextStep");
+        Log.i(MainActivity.TAG, "in goToNextStep: stepPosition: " + stepPosition);
+        Integer nextStepPosition = stepPosition + 1;
+        Log.i(MainActivity.TAG, "in goToNextStep: nextStepPosition: " + nextStepPosition);
+        Log.i(MainActivity.TAG, "in goToNextStep: stepListSize: " + stepListSize);
+        if (nextStepPosition <= stepListSize) {
+            Log.i(MainActivity.TAG, "nextStepPosition <= stepListSize");
+            Intent intent = new Intent(this, StepDetailActivity.class);
+            intent.putExtra(StepDetailFragment.ARG_ITEM_ID, nextStepPosition);
+            intent.putExtra(StepDetailFragment.ARG_ITEM_ID_LIST_SIZE, stepListSize);
+            startActivity(intent);
+        } else {
+            Log.i(MainActivity.TAG, "nextStepPosition > stepListSize");
+            Toast.makeText(getApplicationContext(), "This is the last step",
+                    Toast.LENGTH_SHORT)
+                    .show();
+        }
     }
 }
