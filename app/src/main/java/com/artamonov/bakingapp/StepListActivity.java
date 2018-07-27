@@ -3,6 +3,7 @@ package com.artamonov.bakingapp;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,14 +14,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.artamonov.bakingapp.data.Recipes;
 
 import java.util.List;
-
-import static com.artamonov.bakingapp.MainActivity.TAG;
 
 
 /**
@@ -33,8 +33,8 @@ import static com.artamonov.bakingapp.MainActivity.TAG;
  */
 public class StepListActivity extends AppCompatActivity {
 
-    private boolean mTwoPane;
-    private int stepPosition;
+    public int stepPosition;
+    public boolean mTwoPane;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class StepListActivity extends AppCompatActivity {
 
         View recyclerView = findViewById(R.id.step_list);
         assert recyclerView != null;
-        setupRecyclerView((RecyclerView)recyclerView);
+        setupRecyclerView((RecyclerView) recyclerView);
 
     }
 
@@ -65,17 +65,51 @@ public class StepListActivity extends AppCompatActivity {
                 MainActivity.responseJSON, mTwoPane));
     }
 
+    public void goToNextStepTwoPane(View view) {
+        stepPosition = stepPosition + 1;
+        if (stepPosition <= RecipesParser.stepsList.size()) {
+            Bundle arguments = new Bundle();
+            arguments.putInt(StepDetailFragment.ARG_ITEM_ID, stepPosition);
+            StepDetailFragment fragment = new StepDetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.step_detail_container, fragment)
+                    .commit();
+        } else {
+            Toast.makeText(getApplicationContext(), "This is the last step",
+                    Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
+
+
+    public void goToPreviousStepTwoPane(View view) {
+        stepPosition = stepPosition - 1;
+        if (stepPosition <= RecipesParser.stepsList.size() && stepPosition != 1) {
+            Bundle arguments = new Bundle();
+            arguments.putInt(StepDetailFragment.ARG_ITEM_ID, stepPosition);
+            StepDetailFragment fragment = new StepDetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.step_detail_container, fragment)
+                    .commit();
+        } else {
+            Toast.makeText(getApplicationContext(), "This is the first step",
+                    Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
 
 
     private class StepRecyclerViewAdapter
             extends RecyclerView.Adapter<StepRecyclerViewAdapter.ViewHolder> {
 
-        final String json;
         public final List<Recipes> stepsList;
+        final String json;
         private final Context context;
         private final boolean mTwoPane;
 
-        private StepRecyclerViewAdapter(Context context, List<Recipes> stepsList, String json, boolean twoPane) {
+        StepRecyclerViewAdapter(Context context, List<Recipes> stepsList, String json, boolean twoPane) {
             this.context = context;
             this.stepsList = stepsList;
             this.mTwoPane = twoPane;
@@ -94,7 +128,7 @@ public class StepListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
             String stepShortDescription;
-            stepPosition = position;
+
 
             switch (position) {
                 case 0:
@@ -117,22 +151,30 @@ public class StepListActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     if (mTwoPane) {
+                      //  holder.ivPreviousStep.setVisibility(View.INVISIBLE);
+                      //  holder.ivNextStep.setVisibility(View.INVISIBLE);
+                        stepPosition = position;
                         Bundle arguments = new Bundle();
                         arguments.putInt(StepDetailFragment.ARG_ITEM_ID, position);
-                        arguments.putInt(StepDetailFragment.ARG_ITEM_ID, position);
+                        //arguments.putBoolean(StepDetailFragment.ARG_ITEM_ID, true);
                         StepDetailFragment fragment = new StepDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.step_detail_container, fragment)
                                 .commit();
                     } else {
+                       // holder.ivPreviousStep.setVisibility(View.INVISIBLE);
+                      //  holder.ivNextStep.setVisibility(View.INVISIBLE);
                         Intent intent = new Intent(context, StepDetailActivity.class);
                         intent.putExtra(StepDetailFragment.ARG_ITEM_ID, position);
+                        intent.putExtra(StepDetailFragment.ARG_MODE, true);
                         intent.putExtra(StepDetailFragment.ARG_ITEM_ID_LIST_SIZE, stepsList.size());
                         context.startActivity(intent);
                     }
                 }
             });
+
+
         }
 
         @Override
@@ -143,14 +185,17 @@ public class StepListActivity extends AppCompatActivity {
         class ViewHolder extends RecyclerView.ViewHolder {
 
             private final TextView stepShortDescription;
+            private final ImageView ivPreviousStep;
+            private final ImageView ivNextStep;
 
             private ViewHolder(View itemView) {
                 super(itemView);
                 stepShortDescription = itemView.findViewById(R.id.step_short_description);
+                ivPreviousStep = itemView.findViewById(R.id.ivPreviousStepTwoPane);
+                ivNextStep = itemView.findViewById(R.id.ivNextStepTwoPane);
             }
         }
     }
-
 
 
 }

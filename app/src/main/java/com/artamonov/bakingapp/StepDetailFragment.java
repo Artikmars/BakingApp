@@ -47,6 +47,7 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
+    public static final String ARG_MODE = "orientation mode";
     public static final String ARG_ITEM_ID_LIST_SIZE = "step_list_size";
     private SimpleExoPlayer exoPlayer;
     private SimpleExoPlayerView playerView;
@@ -65,10 +66,19 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
         super.onCreate(savedInstanceState);
         if (getArguments().containsKey(ARG_ITEM_ID)) {
             stepPosition = getArguments().getInt(ARG_ITEM_ID);
+         /*   Boolean isTwoPane = getArguments().getBoolean(ARG_ITEM_ID);
+            if (isTwoPane) {
+                ImageView ivPreviousStep = getActivity().findViewById(R.id.ivPreviousStepTwoPane);
+                ImageView ivNextStep = getActivity().findViewById(R.id.ivNextStepTwoPane);
+                ivPreviousStep.setVisibility(View.VISIBLE);
+                ivNextStep.setVisibility(View.VISIBLE);
+            }*/
             Log.w(MainActivity.TAG, "in Fragment onCreate: step position: " + stepPosition);
         } else {
             stepPosition = getActivity().getIntent().getIntExtra(StepDetailFragment.ARG_ITEM_ID, 0);
         }
+
+
     }
 
 
@@ -110,6 +120,9 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
 
             if (RecipesParser.stepsList != null) {
                 Integer stepID = stepPosition - 1;
+                if (stepID < 0) {
+                    stepID = 0;
+                }
                 String stepDescription = RecipesParser.stepsList.get(stepID).getStepDescription();
                 String stepVideoUrl = RecipesParser.stepsList.get(stepID).getStepVideoUrl();
                 String stepThumbnailUrl = RecipesParser.stepsList.get(stepID).getStepThumbnailUrl();

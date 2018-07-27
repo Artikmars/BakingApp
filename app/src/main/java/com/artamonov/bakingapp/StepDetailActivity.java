@@ -26,7 +26,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
  */
 public class StepDetailActivity extends AppCompatActivity implements View.OnClickListener, Player.EventListener {
 
-    private Integer stepPosition;
+    private int stepPosition;
     private int stepListSize;
 
     @Override
@@ -59,8 +59,16 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
+
             Log.i(MainActivity.TAG, "savedInstanceState == NULL! ");
             Intent intent = getIntent();
+            //  Boolean isTwoPane = intent.getBooleanExtra(ARG_MODE, false);
+            //  if (isTwoPane) {
+        /*    ImageView ivPreviousStepTwoPane = findViewById(R.id.ivPreviousStepTwoPane);
+            ImageView ivNextStepTwoPane = findViewById(R.id.ivNextStepTwoPane);
+            ivPreviousStepTwoPane.setVisibility(View.INVISIBLE);
+            ivNextStepTwoPane.setVisibility(View.INVISIBLE);*/
+            //   }
             stepPosition = intent.getIntExtra(StepDetailFragment.ARG_ITEM_ID, 0);
             if (stepPosition == 0) {
                 ImageView ivPreviousStep = findViewById(R.id.ivPreviousStep);
@@ -82,9 +90,18 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
            /* SharedPreferences.Editor editor = getSharedPreferences(PREFERENCE_NAME, MODE_PRIVATE).edit();
             editor.putInt(PREF_KEY, stepPosition);
             editor.apply();*/
+        } else {
+            stepPosition = savedInstanceState.getInt("stepPosition", 0);
+            stepListSize = savedInstanceState.getInt("stepListSize", 0);
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt("stepPosition", stepPosition);
+        outState.putInt("stepListSize", stepListSize);
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -173,19 +190,19 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
                     .show();
         }*/
 
-       Log.i(MainActivity.TAG, "in goToPreviousStep");
-        Log.i(MainActivity.TAG, "in goToPreviousStep: stepPosition: "  + stepPosition);
+        Log.i(MainActivity.TAG, "in goToPreviousStep");
+        Log.i(MainActivity.TAG, "in goToPreviousStep: stepPosition: " + stepPosition);
         Integer prevStepPosition = stepPosition - 1;
-        Log.i(MainActivity.TAG, "in goToPreviousStep: prevStepPosition: "  + prevStepPosition);
-        Log.i(MainActivity.TAG, "in goToPreviousStep: stepListSize: "  + stepListSize);
+        Log.i(MainActivity.TAG, "in goToPreviousStep: prevStepPosition: " + prevStepPosition);
+        Log.i(MainActivity.TAG, "in goToPreviousStep: stepListSize: " + stepListSize);
         if (prevStepPosition <= stepListSize && stepPosition != 1) {
-            Log.i(MainActivity.TAG, "prevStepPosition <= stepListSize"  );
+            Log.i(MainActivity.TAG, "prevStepPosition <= stepListSize");
             Intent intent = new Intent(this, StepDetailActivity.class);
             intent.putExtra(StepDetailFragment.ARG_ITEM_ID, prevStepPosition);
             intent.putExtra(StepDetailFragment.ARG_ITEM_ID_LIST_SIZE, stepListSize);
             startActivity(intent);
         } else {
-            Log.i(MainActivity.TAG, "prevStepPosition > stepListSize"  );
+            Log.i(MainActivity.TAG, "prevStepPosition > stepListSize");
             Toast.makeText(getApplicationContext(), "This is the first step",
                     Toast.LENGTH_SHORT)
                     .show();

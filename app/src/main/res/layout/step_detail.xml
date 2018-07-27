@@ -31,7 +31,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvIngredientsList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="185dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="236dp"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
@@ -56,7 +56,27 @@
         app:layout_constraintTop_toBottomOf="@+id/playerView"
         tools:layout_editor_absoluteY="240dp" />
 
+    <ImageView
+        android:id="@+id/ivPreviousStepTwoPane"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="50dp"
+        android:visibility="invisible"
+        android:onClick="goToPreviousStepTwoPane"
+        app:layout_constraintEnd_toStartOf="@+id/ivNextStepTwoPane"
+        app:layout_constraintTop_toBottomOf="@+id/tv_step_description"
+        app:srcCompat="@drawable/round_navigate_before_black_18dp" />
 
+    <ImageView
+        android:id="@+id/ivNextStepTwoPane"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="220dp"
+        android:visibility="invisible"
+        android:onClick="goToNextStepTwoPane"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_step_description"
+        app:srcCompat="@drawable/round_navigate_next_black_18dp" />
 
     <!-- <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation_view"
