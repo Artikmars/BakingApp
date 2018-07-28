@@ -3,6 +3,7 @@ package com.artamonov.bakingapp;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.artamonov.bakingapp.data.Recipes;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -36,7 +38,15 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         Recipes recipes = recipesList.get(position);
-        viewHolder.imageView.setImageDrawable(recipes.getRecipeImage());
+        String recipeThumbnail = recipes.getRecipeThumbnailUrl();
+        if (TextUtils.isEmpty(recipeThumbnail)) {
+            recipeThumbnail = null;
+        }
+        Picasso.get()
+                .load(recipeThumbnail)
+                .placeholder(recipes.getRecipeImage())
+                .error(R.drawable.nutellapie)
+                .into(viewHolder.imageView);
         viewHolder.textView.setText(recipes.getRecipeName());
     }
 

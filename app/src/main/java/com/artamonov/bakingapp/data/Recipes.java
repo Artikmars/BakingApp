@@ -8,6 +8,15 @@ public class Recipes {
     private String recipeName;
     private String recipeServings;
     private Drawable recipeImage;
+    private String recipeThumbnailUrl;
+
+    public String getRecipeThumbnailUrl() {
+        return recipeThumbnailUrl;
+    }
+
+    public void setRecipeThumbnailUrl(String recipeThumbnailUrl) {
+        this.recipeThumbnailUrl = recipeThumbnailUrl;
+    }
 
     private String ingredientName;
     private Integer ingredientQuantity;

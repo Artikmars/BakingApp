@@ -28,11 +28,13 @@ class RecipesParser {
                     Integer recipeID = jsonRecipeObject.optInt("id");
                     String recipeName = jsonRecipeObject.optString("name");
                     String recipeServings = jsonRecipeObject.optString("servings");
+                    String recipeThumbnailUrl = jsonRecipeObject.optString("image");
 
                     Recipes recipes = new Recipes();
                     recipes.setRecipeId(recipeID);
                     recipes.setRecipeName(recipeName);
                     recipes.setRecipeServings(recipeServings);
+                    recipes.setRecipeThumbnailUrl(recipeThumbnailUrl);
                     recipesList.add(recipes);
                 }
             }
