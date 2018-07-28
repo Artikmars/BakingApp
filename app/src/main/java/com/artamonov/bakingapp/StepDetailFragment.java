@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +50,8 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
     public static final String ARG_ITEM_ID = "item_id";
     public static final String ARG_MODE = "orientation mode";
     public static final String ARG_ITEM_ID_LIST_SIZE = "step_list_size";
-    public static final String EXO_PLAYER_POSITION = "position";
+    public static final String ARG_RECIPE_POSITION = "recipe position";
+    private static final String EXO_PLAYER_POSITION = "position";
     private SimpleExoPlayer exoPlayer;
     private SimpleExoPlayerView playerView;
     private Integer stepPosition;
@@ -70,21 +70,10 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
         super.onCreate(savedInstanceState);
         if (getArguments().containsKey(ARG_ITEM_ID)) {
             stepPosition = getArguments().getInt(ARG_ITEM_ID);
-         /*   Boolean isTwoPane = getArguments().getBoolean(ARG_ITEM_ID);
-            if (isTwoPane) {
-                ImageView ivPreviousStep = getActivity().findViewById(R.id.ivPreviousStepTwoPane);
-                ImageView ivNextStep = getActivity().findViewById(R.id.ivNextStepTwoPane);
-                ivPreviousStep.setVisibility(View.VISIBLE);
-                ivNextStep.setVisibility(View.VISIBLE);
-            }*/
-            Log.w(MainActivity.TAG, "in Fragment onCreate: step position: " + stepPosition);
         } else {
             stepPosition = getActivity().getIntent().getIntExtra(StepDetailFragment.ARG_ITEM_ID, 0);
         }
-
-
     }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -94,9 +83,7 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
         TextView tvStepDescription = rootView.findViewById(R.id.tv_step_description);
         ImageView ivStepThumbnail = rootView.findViewById(R.id.ivStepThumbnail);
         RecyclerView rvIngredients = rootView.findViewById(R.id.rvIngredientsList);
-
         Integer recipePosition = getActivity().getIntent().getIntExtra("recipe position", 0);
-
         boolean isSteps = true;
 
         /**
@@ -113,7 +100,6 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
             rvIngredients.setAdapter(adapter);
         }
 
-        Log.w(MainActivity.TAG, "in StepDetailFragment: isSteps: " + isSteps);
         if (isSteps) {
 
             /**
@@ -139,8 +125,8 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
                     playerView.setVisibility(View.INVISIBLE);
                     Picasso.get()
                             .load(stepThumbnailUrl)
-                            .placeholder(RecipesParser.stepsList.get(stepID).getStepThumbnail())
-                            .error(RecipesParser.stepsList.get(stepID).getStepThumbnail())
+                            .placeholder(R.drawable.brownies)
+                            .error(R.drawable.brownies)
                             .into(ivStepThumbnail);
                     if (isThumbnail) {
                         playerView.setVisibility(View.VISIBLE);

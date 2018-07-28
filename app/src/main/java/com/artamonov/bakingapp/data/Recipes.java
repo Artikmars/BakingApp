@@ -29,10 +29,6 @@ public class Recipes {
     private String stepThumbnailUrl;
     private Drawable stepThumbnail;
 
-    public Recipes(Drawable recipeImage) {
-        this.recipeImage = recipeImage;
-    }
-
     public Recipes() {
 
     }
@@ -44,10 +40,6 @@ public class Recipes {
 
     public void setStepThumbnailUrl(String stepThumbnailUrl) {
         this.stepThumbnailUrl = stepThumbnailUrl;
-    }
-
-    public Drawable getStepThumbnail() {
-        return stepThumbnail;
     }
 
     public void setStepThumbnail(Drawable stepThumbnail) {

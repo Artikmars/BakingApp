@@ -1,7 +1,6 @@
 package com.artamonov.bakingapp;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,13 +26,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.artamonov.bakingapp.StepDetailFragment.ARG_ITEM_ID;
+
 public class MainActivity extends AppCompatActivity implements RecipeRecyclerViewAdapter.ItemClickListener {
 
     public static final String TAG = "myLogs";
     public static String responseJSON;
     private RecyclerView recyclerView;
-    public static final String PREFERENCE_NAME = "JSON_pref";
-    public static final String PREF_KEY = "JSON";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,14 +43,7 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
         recyclerView = findViewById(R.id.rvBaking);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
         String url = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
-
-
-       // SharedPreferences preferences = getSharedPreferences(PREFERENCE_NAME, MODE_PRIVATE);
-       // Log.i(MainActivity.TAG, "responseJSON: " +  preferences.getString(PREF_KEY, null));
-     //   responseJSON = preferences.getString(PREF_KEY, null);
-      //  if (responseJSON == null) {
-            getJSONData(url);
-     //   }
+        getJSONData(url);
 
 
     }
@@ -113,11 +105,6 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
                 }
             });
         }
-
-       /* SharedPreferences.Editor editor = getSharedPreferences(PREFERENCE_NAME, 0).edit();
-        editor.putString(PREF_KEY, responseJSON);
-        editor.apply();*/
-
     }
 
     private void parseJSONRecipes(String responseJSON) {
@@ -125,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
         populateRecipesImages(RecipesParser.recipesList);
         if (RecipesParser.recipesList != null) {
             RecipeRecyclerViewAdapter recipeRecyclerViewAdapter =
-                    new RecipeRecyclerViewAdapter(MainActivity.this,
+                    new RecipeRecyclerViewAdapter(
                             RecipesParser.recipesList, this);
             recyclerView.setAdapter(recipeRecyclerViewAdapter);
         }
@@ -161,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
         RecipesParser.parseJSONIngredientsSteps(responseJSON, position);
         populateStepsThumbnails(RecipesParser.stepsList);
         Intent intent = new Intent(this, StepListActivity.class);
-        intent.putExtra(StepDetailFragment.ARG_ITEM_ID, position);
+        intent.putExtra(ARG_ITEM_ID, position);
         startActivity(intent);
 
     }

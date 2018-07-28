@@ -1,6 +1,8 @@
 package com.artamonov.bakingapp;
 
 import android.annotation.SuppressLint;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +22,10 @@ import com.artamonov.bakingapp.data.Recipes;
 
 import java.util.List;
 
+import static com.artamonov.bakingapp.StepDetailFragment.ARG_ITEM_ID;
+import static com.artamonov.bakingapp.StepDetailFragment.ARG_ITEM_ID_LIST_SIZE;
+import static com.artamonov.bakingapp.StepDetailFragment.ARG_RECIPE_POSITION;
+
 
 /**
  * An activity representing a list of Steps. This activity
@@ -31,17 +37,16 @@ import java.util.List;
  */
 public class StepListActivity extends AppCompatActivity {
 
-    public int stepPosition;
-    public int stepListSize;
-    public boolean mTwoPane;
+    public static int recipePosition;
+    private int stepPosition;
+    private int stepListSize;
+    private boolean mTwoPane;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(StepDetailFragment.ARG_ITEM_ID, stepPosition);
-        outState.putInt(StepDetailFragment.ARG_ITEM_ID_LIST_SIZE, stepListSize);
-        Log.e(MainActivity.TAG, "onSaveInstanceState: stepPosition: " + stepPosition
-                + " stepListSize: " + stepListSize);
+        outState.putInt(ARG_ITEM_ID, stepPosition);
+        outState.putInt(ARG_ITEM_ID_LIST_SIZE, stepListSize);
     }
 
     @Override
@@ -63,12 +68,15 @@ public class StepListActivity extends AppCompatActivity {
             mTwoPane = true;
             Log.e(MainActivity.TAG, "mTwoPane: " + true);
         }
-        Log.e(MainActivity.TAG, "mTwoPane: " + mTwoPane);
         if (savedInstanceState != null) {
             stepPosition = savedInstanceState.getInt(StepDetailFragment.ARG_ITEM_ID, 0);
-            stepListSize = savedInstanceState.getInt(StepDetailFragment.ARG_ITEM_ID_LIST_SIZE, 0);
-            Log.e(MainActivity.TAG, "from savedInstanceState: stepPosition" + stepPosition
-                    + " stepListSize: " + stepListSize);
+            stepListSize = savedInstanceState.getInt(ARG_ITEM_ID_LIST_SIZE, 0);
+            recipePosition = savedInstanceState.getInt(ARG_RECIPE_POSITION, 0);
+        }
+
+        if (getIntent() != null) {
+            Intent intent = getIntent();
+            recipePosition = intent.getIntExtra(ARG_ITEM_ID, 0);
         }
 
         View recyclerView = findViewById(R.id.step_list);
@@ -77,17 +85,24 @@ public class StepListActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onPause() {
+        Log.e(MainActivity.TAG, "List OnPause - recipePosition: " + StepListActivity.recipePosition
+                + " list: " + RecipesParser.ingredientList.get(0).getIngredientName());
+        super.onPause();
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+        int appWidgetIds[] = appWidgetManager.getAppWidgetIds(
+                new ComponentName(getApplicationContext(), RecipeWidgetProvider.class));
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.lvAppWidget);
+    }
+
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         recyclerView.setAdapter(new StepRecyclerViewAdapter(this, RecipesParser.stepsList,
                 MainActivity.responseJSON, mTwoPane));
     }
 
     public void goToNextStepTwoPane(View view) {
-       Log.e(MainActivity.TAG, "goToNextStepTwoPane: stepPosition prev:" + stepPosition
-              + " stepListSize: " + stepListSize);
         stepPosition = stepPosition + 1;
-        Log.e(MainActivity.TAG, "goToNextStepTwoPane: stepPosition = stepPosition + 1; stepPosition:" + stepPosition
-        );
         if (stepPosition <= stepListSize) {
             Bundle arguments = new Bundle();
             arguments.putInt(StepDetailFragment.ARG_ITEM_ID, stepPosition);
@@ -105,11 +120,7 @@ public class StepListActivity extends AppCompatActivity {
 
 
     public void goToPreviousStepTwoPane(View view) {
-        Log.e(MainActivity.TAG, "goToPreviousStepTwoPane: stepPosition prev:" + stepPosition
-                + " stepListSize: " + stepListSize);
         stepPosition = stepPosition - 1;
-        Log.e(MainActivity.TAG, "goToPreviousStepTwoPane: stepPosition = stepPosition - 1; stepPosition:" + stepPosition
-              );
         if (stepPosition <= stepListSize && stepPosition != 1) {
             Bundle arguments = new Bundle();
             arguments.putInt(StepDetailFragment.ARG_ITEM_ID, stepPosition);
@@ -129,7 +140,7 @@ public class StepListActivity extends AppCompatActivity {
     private class StepRecyclerViewAdapter
             extends RecyclerView.Adapter<StepRecyclerViewAdapter.ViewHolder> {
 
-        public final List<Recipes> stepsList;
+        final List<Recipes> stepsList;
         final String json;
         private final Context context;
         private final boolean mTwoPane;
@@ -176,29 +187,23 @@ public class StepListActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     if (mTwoPane) {
-                        //  holder.ivPreviousStep.setVisibility(View.INVISIBLE);
-                        //  holder.ivNextStep.setVisibility(View.INVISIBLE);
-                        Log.e(MainActivity.TAG, "onClick: stepPosition prev:" + stepPosition
-                                + " stepListSize: " + stepListSize);
                         stepPosition = position;
                         Log.e(MainActivity.TAG, "onClick:  stepPosition = position; stepPosition:" + stepPosition
-                              );
+                        );
                         Bundle arguments = new Bundle();
                         arguments.putInt(StepDetailFragment.ARG_ITEM_ID, position);
-                        //arguments.putBoolean(StepDetailFragment.ARG_ITEM_ID, true);
                         StepDetailFragment fragment = new StepDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.step_detail_container, fragment)
                                 .commit();
                     } else {
-                        // holder.ivPreviousStep.setVisibility(View.INVISIBLE);
-                        //  holder.ivNextStep.setVisibility(View.INVISIBLE);
                         stepPosition = position;
                         Intent intent = new Intent(context, StepDetailActivity.class);
                         intent.putExtra(StepDetailFragment.ARG_ITEM_ID, position);
                         intent.putExtra(StepDetailFragment.ARG_MODE, true);
-                        intent.putExtra(StepDetailFragment.ARG_ITEM_ID_LIST_SIZE, stepsList.size());
+                        intent.putExtra(ARG_ITEM_ID_LIST_SIZE, stepsList.size());
+                        intent.putExtra(ARG_RECIPE_POSITION, recipePosition);
                         context.startActivity(intent);
                     }
                 }

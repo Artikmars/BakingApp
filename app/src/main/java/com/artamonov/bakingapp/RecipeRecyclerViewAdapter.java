@@ -1,6 +1,5 @@
 package com.artamonov.bakingapp;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -19,10 +18,8 @@ public class RecipeRecyclerViewAdapter extends RecyclerView.Adapter<RecipeRecycl
 
     private static ItemClickListener listener;
     private final List<Recipes> recipesList;
-    private final Context context;
 
-    public RecipeRecyclerViewAdapter(Context context, List<Recipes> recipesList, ItemClickListener itemClickListener) {
-        this.context = context;
+    public RecipeRecyclerViewAdapter(List<Recipes> recipesList, ItemClickListener itemClickListener) {
         this.recipesList = recipesList;
         listener = itemClickListener;
     }

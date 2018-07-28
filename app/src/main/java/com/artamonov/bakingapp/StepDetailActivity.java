@@ -1,5 +1,7 @@
 package com.artamonov.bakingapp;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -20,6 +22,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 
 import static com.artamonov.bakingapp.StepDetailFragment.ARG_ITEM_ID;
 import static com.artamonov.bakingapp.StepDetailFragment.ARG_ITEM_ID_LIST_SIZE;
+import static com.artamonov.bakingapp.StepDetailFragment.ARG_RECIPE_POSITION;
 
 /**
  * An activity representing a single Step detail screen. This
@@ -29,8 +32,18 @@ import static com.artamonov.bakingapp.StepDetailFragment.ARG_ITEM_ID_LIST_SIZE;
  */
 public class StepDetailActivity extends AppCompatActivity implements View.OnClickListener, Player.EventListener {
 
+    private static int recipePosition;
     private int stepPosition;
     private int stepListSize;
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+        int appWidgetIds[] = appWidgetManager.getAppWidgetIds(
+                new ComponentName(getApplicationContext(), RecipeWidgetProvider.class));
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.lvAppWidget);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,39 +52,19 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-     //   getSupportActionBar().setDisplayShowHomeEnabled(true);
-        Log.i(MainActivity.TAG, "onCreate: stepPosition - " + stepPosition);
-        Log.i(MainActivity.TAG, "onCreate: stepListSize - " + stepListSize);
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
-        // SharedPreferences prefs = getSharedPreferences(PREFERENCE_NAME, MODE_PRIVATE);
-        //  stepPosition = prefs.getInt(PREF_KEY, 0);
-        // savedInstanceState is non-null when there is fragment state
-        // saved from previous configurations of this activity
-        // (e.g. when rotating the screen from portrait to landscape).
-        // In this case, the fragment will automatically be re-added
-        // to its container so we don't need to manually add it.
-        // For more information, see the Fragments API guide at:
-        //
-        // http://developer.android.com/guide/components/fragments.html
-        //
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
 
             Log.i(MainActivity.TAG, "savedInstanceState == NULL! ");
             Intent intent = getIntent();
-            //  Boolean isTwoPane = intent.getBooleanExtra(ARG_MODE, false);
-            //  if (isTwoPane) {
-        /*    ImageView ivPreviousStepTwoPane = findViewById(R.id.ivPreviousStepTwoPane);
-            ImageView ivNextStepTwoPane = findViewById(R.id.ivNextStepTwoPane);
-            ivPreviousStepTwoPane.setVisibility(View.INVISIBLE);
-            ivNextStepTwoPane.setVisibility(View.INVISIBLE);*/
-            //   }
+
+            recipePosition = intent.getIntExtra(ARG_RECIPE_POSITION, 0);
             stepPosition = intent.getIntExtra(ARG_ITEM_ID, 0);
             if (stepPosition == 0) {
                 ImageView ivPreviousStep = findViewById(R.id.ivPreviousStep);
@@ -79,9 +72,7 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
                 ivPreviousStep.setVisibility(View.INVISIBLE);
                 ivNextStep.setVisibility(View.INVISIBLE);
             }
-            Log.i(MainActivity.TAG, "get stepPosition from Intent: " + stepPosition);
             stepListSize = intent.getIntExtra(ARG_ITEM_ID_LIST_SIZE, 0);
-            Log.i(MainActivity.TAG, "get stepListSize from Intent: " + stepListSize);
             Bundle arguments = new Bundle();
             arguments.putInt(ARG_ITEM_ID, stepPosition);
             StepDetailFragment fragment = new StepDetailFragment();
@@ -89,13 +80,10 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.step_detail_container, fragment)
                     .commit();
-
-           /* SharedPreferences.Editor editor = getSharedPreferences(PREFERENCE_NAME, MODE_PRIVATE).edit();
-            editor.putInt(PREF_KEY, stepPosition);
-            editor.apply();*/
         } else {
             stepPosition = savedInstanceState.getInt(ARG_ITEM_ID, 0);
             stepListSize = savedInstanceState.getInt(ARG_ITEM_ID_LIST_SIZE, 0);
+            recipePosition = savedInstanceState.getInt(ARG_RECIPE_POSITION, 0);
         }
     }
 
@@ -103,6 +91,7 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(ARG_ITEM_ID, stepPosition);
         outState.putInt(ARG_ITEM_ID_LIST_SIZE, stepListSize);
+        outState.putInt(ARG_RECIPE_POSITION, recipePosition);
         super.onSaveInstanceState(outState);
     }
 
@@ -178,34 +167,13 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
     }
 
     public void goToPreviousStep(View view) {
-     /*   Bundle arguments = new Bundle();
         Integer prevStepPosition = stepPosition - 1;
-        if (prevStepPosition <= stepListSize) {
-            arguments.putInt(StepDetailFragment.ARG_ITEM_ID, prevStepPosition);
-            StepDetailFragment fragment = new StepDetailFragment();
-            fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.step_detail_container, fragment)
-                    .commit();
-        } else {
-            Toast.makeText(getApplicationContext(), "This is the last step",
-                    Toast.LENGTH_SHORT)
-                    .show();
-        }*/
-
-        Log.i(MainActivity.TAG, "in goToPreviousStep");
-        Log.i(MainActivity.TAG, "in goToPreviousStep: stepPosition: " + stepPosition);
-        Integer prevStepPosition = stepPosition - 1;
-        Log.i(MainActivity.TAG, "in goToPreviousStep: prevStepPosition: " + prevStepPosition);
-        Log.i(MainActivity.TAG, "in goToPreviousStep: stepListSize: " + stepListSize);
         if (prevStepPosition <= stepListSize && stepPosition != 1) {
-            Log.i(MainActivity.TAG, "prevStepPosition <= stepListSize");
             Intent intent = new Intent(this, StepDetailActivity.class);
             intent.putExtra(ARG_ITEM_ID, prevStepPosition);
             intent.putExtra(ARG_ITEM_ID_LIST_SIZE, stepListSize);
             startActivity(intent);
         } else {
-            Log.i(MainActivity.TAG, "prevStepPosition > stepListSize");
             Toast.makeText(getApplicationContext(), "This is the first step",
                     Toast.LENGTH_SHORT)
                     .show();
@@ -213,21 +181,14 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-
     public void goToNextStep(View view) {
-        Log.i(MainActivity.TAG, "in goToNextStep");
-        Log.i(MainActivity.TAG, "in goToNextStep: stepPosition: " + stepPosition);
         Integer nextStepPosition = stepPosition + 1;
-        Log.i(MainActivity.TAG, "in goToNextStep: nextStepPosition: " + nextStepPosition);
-        Log.i(MainActivity.TAG, "in goToNextStep: stepListSize: " + stepListSize);
         if (nextStepPosition <= stepListSize) {
-            Log.i(MainActivity.TAG, "nextStepPosition <= stepListSize");
             Intent intent = new Intent(this, StepDetailActivity.class);
             intent.putExtra(ARG_ITEM_ID, nextStepPosition);
             intent.putExtra(ARG_ITEM_ID_LIST_SIZE, stepListSize);
             startActivity(intent);
         } else {
-            Log.i(MainActivity.TAG, "nextStepPosition > stepListSize");
             Toast.makeText(getApplicationContext(), "This is the last step",
                     Toast.LENGTH_SHORT)
                     .show();

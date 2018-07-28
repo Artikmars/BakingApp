@@ -1,7 +1,6 @@
 package com.artamonov.bakingapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService.RemoteViewsFactory;
 
@@ -12,16 +11,14 @@ import java.util.List;
 
 import static com.artamonov.bakingapp.MainActivity.responseJSON;
 
-public class RecipeWidgetFactory implements RemoteViewsFactory {
+class RecipeWidgetFactory implements RemoteViewsFactory {
 
-    ArrayList<String> data;
-    private List<Recipes> widgetRecipesList;
     private final Context context;
+    private List<Recipes> widgetIngredientsList;
 
     RecipeWidgetFactory(Context context) {
         this.context = context;
-        widgetRecipesList = RecipesParser.recipesList;
-        // widgetIngredientsList = RecipesParser.ingredientList;
+        widgetIngredientsList = RecipesParser.ingredientList;
     }
 
     @Override
@@ -30,7 +27,8 @@ public class RecipeWidgetFactory implements RemoteViewsFactory {
 
     @Override
     public int getCount() {
-        return widgetRecipesList.size();
+        return widgetIngredientsList.size();
+
     }
 
     @Override
@@ -47,10 +45,13 @@ public class RecipeWidgetFactory implements RemoteViewsFactory {
     public RemoteViews getViewAt(int position) {
         RemoteViews rView = new RemoteViews(context.getPackageName(),
                 R.layout.ingredients_widget_item);
-        rView.setTextViewText(R.id.tvItemRecipe, widgetRecipesList.get(position).getRecipeName());
-        Intent clickIntent = new Intent();
-        clickIntent.putExtra(RecipeWidgetProvider.ITEM_POSITION, position);
-        rView.setOnClickFillInIntent(R.id.tvItemRecipe, clickIntent);
+        String ingredientName = widgetIngredientsList.get(position).getIngredientName();
+        String ingredientMeasure = widgetIngredientsList.get(position).getIngredientMeasure();
+        Integer ingredientQuantity = widgetIngredientsList.get(position).getIngredientQuantity();
+        String ingredientDescription = String.format(context
+                        .getResources().getString(R.string.ingredient_description), ingredientName,
+                ingredientQuantity, ingredientMeasure);
+        rView.setTextViewText(R.id.tvItemRecipe, ingredientDescription);
         return rView;
     }
 
@@ -66,9 +67,12 @@ public class RecipeWidgetFactory implements RemoteViewsFactory {
 
     @Override
     public void onDataSetChanged() {
-        widgetRecipesList.clear();
-        RecipesParser.parseJSONRecipes(responseJSON);
-        widgetRecipesList = RecipesParser.recipesList;
+        if (widgetIngredientsList != null) {
+            widgetIngredientsList.clear();
+        }
+        RecipesParser.parseJSONIngredientsSteps(responseJSON, StepListActivity.recipePosition);
+        widgetIngredientsList = RecipesParser.ingredientList;
+
     }
 
     @Override

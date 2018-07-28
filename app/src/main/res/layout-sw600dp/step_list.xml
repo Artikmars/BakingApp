@@ -52,6 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
+            android:contentDescription="@string/previous_step"
             android:onClick="goToPreviousStepTwoPane"
             app:layout_constraintEnd_toStartOf="@+id/ivNextStepTwoPane"
             app:layout_constraintTop_toBottomOf="@+id/step_detail_container"
@@ -63,6 +64,7 @@
             android:layout_height="36dp"
             android:layout_marginEnd="128dp"
             android:onClick="goToNextStepTwoPane"
+            android:contentDescription="@string/next_step"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/step_detail_container"
             app:srcCompat="@drawable/round_navigate_next_black_18dp" />
