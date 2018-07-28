@@ -18,6 +18,9 @@ import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 
+import static com.artamonov.bakingapp.StepDetailFragment.ARG_ITEM_ID;
+import static com.artamonov.bakingapp.StepDetailFragment.ARG_ITEM_ID_LIST_SIZE;
+
 /**
  * An activity representing a single Step detail screen. This
  * activity is only used on narrow width devices. On tablet-size devices,
@@ -69,7 +72,7 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
             ivPreviousStepTwoPane.setVisibility(View.INVISIBLE);
             ivNextStepTwoPane.setVisibility(View.INVISIBLE);*/
             //   }
-            stepPosition = intent.getIntExtra(StepDetailFragment.ARG_ITEM_ID, 0);
+            stepPosition = intent.getIntExtra(ARG_ITEM_ID, 0);
             if (stepPosition == 0) {
                 ImageView ivPreviousStep = findViewById(R.id.ivPreviousStep);
                 ImageView ivNextStep = findViewById(R.id.ivNextStep);
@@ -77,10 +80,10 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
                 ivNextStep.setVisibility(View.INVISIBLE);
             }
             Log.i(MainActivity.TAG, "get stepPosition from Intent: " + stepPosition);
-            stepListSize = intent.getIntExtra(StepDetailFragment.ARG_ITEM_ID_LIST_SIZE, 0);
+            stepListSize = intent.getIntExtra(ARG_ITEM_ID_LIST_SIZE, 0);
             Log.i(MainActivity.TAG, "get stepListSize from Intent: " + stepListSize);
             Bundle arguments = new Bundle();
-            arguments.putInt(StepDetailFragment.ARG_ITEM_ID, stepPosition);
+            arguments.putInt(ARG_ITEM_ID, stepPosition);
             StepDetailFragment fragment = new StepDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
@@ -91,15 +94,15 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
             editor.putInt(PREF_KEY, stepPosition);
             editor.apply();*/
         } else {
-            stepPosition = savedInstanceState.getInt("stepPosition", 0);
-            stepListSize = savedInstanceState.getInt("stepListSize", 0);
+            stepPosition = savedInstanceState.getInt(ARG_ITEM_ID, 0);
+            stepListSize = savedInstanceState.getInt(ARG_ITEM_ID_LIST_SIZE, 0);
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt("stepPosition", stepPosition);
-        outState.putInt("stepListSize", stepListSize);
+        outState.putInt(ARG_ITEM_ID, stepPosition);
+        outState.putInt(ARG_ITEM_ID_LIST_SIZE, stepListSize);
         super.onSaveInstanceState(outState);
     }
 
@@ -198,8 +201,8 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
         if (prevStepPosition <= stepListSize && stepPosition != 1) {
             Log.i(MainActivity.TAG, "prevStepPosition <= stepListSize");
             Intent intent = new Intent(this, StepDetailActivity.class);
-            intent.putExtra(StepDetailFragment.ARG_ITEM_ID, prevStepPosition);
-            intent.putExtra(StepDetailFragment.ARG_ITEM_ID_LIST_SIZE, stepListSize);
+            intent.putExtra(ARG_ITEM_ID, prevStepPosition);
+            intent.putExtra(ARG_ITEM_ID_LIST_SIZE, stepListSize);
             startActivity(intent);
         } else {
             Log.i(MainActivity.TAG, "prevStepPosition > stepListSize");
@@ -220,8 +223,8 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
         if (nextStepPosition <= stepListSize) {
             Log.i(MainActivity.TAG, "nextStepPosition <= stepListSize");
             Intent intent = new Intent(this, StepDetailActivity.class);
-            intent.putExtra(StepDetailFragment.ARG_ITEM_ID, nextStepPosition);
-            intent.putExtra(StepDetailFragment.ARG_ITEM_ID_LIST_SIZE, stepListSize);
+            intent.putExtra(ARG_ITEM_ID, nextStepPosition);
+            intent.putExtra(ARG_ITEM_ID_LIST_SIZE, stepListSize);
             startActivity(intent);
         } else {
             Log.i(MainActivity.TAG, "nextStepPosition > stepListSize");
