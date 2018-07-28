@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
@@ -49,9 +50,11 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
     public static final String ARG_ITEM_ID = "item_id";
     public static final String ARG_MODE = "orientation mode";
     public static final String ARG_ITEM_ID_LIST_SIZE = "step_list_size";
+    public static final String EXO_PLAYER_POSITION = "position";
     private SimpleExoPlayer exoPlayer;
     private SimpleExoPlayerView playerView;
     private Integer stepPosition;
+    private long exoPlayerPosition;
 
 
     /**
@@ -134,11 +137,11 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
                     if (isThumbnail) {
                         playerView.setVisibility(View.VISIBLE);
                         ivStepThumbnail.setVisibility(View.GONE);
-                        initializePlayer(rootView, Uri.parse(stepThumbnailUrl));
+                        initializePlayer(rootView, Uri.parse(stepThumbnailUrl), savedInstanceState);
                     }
                 } else {
                     ivStepThumbnail.setVisibility(View.INVISIBLE);
-                    initializePlayer(rootView, Uri.parse(stepVideoUrl));
+                    initializePlayer(rootView, Uri.parse(stepVideoUrl), savedInstanceState);
                 }
 
                 tvStepDescription.setText(stepDescription);
@@ -154,18 +157,31 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
     public void onPause() {
         super.onPause();
         if (exoPlayer != null) {
+            exoPlayerPosition = exoPlayer.getCurrentPosition();
             exoPlayer.release();
         }
     }
 
 
-    private void initializePlayer(View view, Uri url) {
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(EXO_PLAYER_POSITION, exoPlayerPosition);
+    }
+
+    private void initializePlayer(View view, Uri url, Bundle savedInstanceState) {
         Context context = view.getContext();
         if (exoPlayer == null) {
             // Create an instance of the ExoPlayer.
             TrackSelector trackSelector = new DefaultTrackSelector();
             exoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector);
             playerView.setPlayer(exoPlayer);
+
+            exoPlayerPosition = C.TIME_UNSET;
+            if (savedInstanceState != null) {
+                exoPlayerPosition = savedInstanceState.getLong(EXO_PLAYER_POSITION, C.TIME_UNSET);
+                exoPlayer.seekTo(exoPlayerPosition);
+            }
 
             // Set the ExoPlayer.EventListener to this activity.
             exoPlayer.addListener(this);
