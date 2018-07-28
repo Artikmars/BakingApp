@@ -39,7 +39,7 @@ public class StepDetailActivity extends AppCompatActivity implements View.OnClic
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+     //   getSupportActionBar().setDisplayShowHomeEnabled(true);
         Log.i(MainActivity.TAG, "onCreate: stepPosition - " + stepPosition);
         Log.i(MainActivity.TAG, "onCreate: stepListSize - " + stepListSize);
         // Show the Up button in the action bar.

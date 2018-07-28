@@ -52,6 +52,7 @@ public class StepListActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         stepListSize = RecipesParser.stepsList.size();
 
         if (findViewById(R.id.step_detail_container) != null) {
