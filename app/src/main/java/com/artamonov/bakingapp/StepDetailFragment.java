@@ -35,6 +35,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 
 /**
  * A fragment representing a single Step detail screen.
@@ -129,11 +130,18 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
                 String stepDescription = RecipesParser.stepsList.get(stepID).getStepDescription();
                 String stepVideoUrl = RecipesParser.stepsList.get(stepID).getStepVideoUrl();
                 String stepThumbnailUrl = RecipesParser.stepsList.get(stepID).getStepThumbnailUrl();
+                if (TextUtils.isEmpty(stepThumbnailUrl)) {
+                    stepThumbnailUrl = null;
+                }
 
                 boolean isThumbnail = !TextUtils.isEmpty(stepThumbnailUrl);
                 if (TextUtils.isEmpty(stepVideoUrl)) {
                     playerView.setVisibility(View.INVISIBLE);
-                    ivStepThumbnail.setImageDrawable(RecipesParser.stepsList.get(stepID).getStepThumbnail());
+                    Picasso.get()
+                            .load(stepThumbnailUrl)
+                            .placeholder(RecipesParser.stepsList.get(stepID).getStepThumbnail())
+                            .error(RecipesParser.stepsList.get(stepID).getStepThumbnail())
+                            .into(ivStepThumbnail);
                     if (isThumbnail) {
                         playerView.setVisibility(View.VISIBLE);
                         ivStepThumbnail.setVisibility(View.GONE);
@@ -145,10 +153,10 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
                 }
 
                 tvStepDescription.setText(stepDescription);
+            } else {
+                Toast.makeText(getActivity().getApplicationContext(), "Steps List is Empty", Toast.LENGTH_SHORT)
+                        .show();
             }
-        } else {
-            Toast.makeText(getActivity().getApplicationContext(), "Please, try later", Toast.LENGTH_SHORT)
-                    .show();
         }
         return rootView;
     }

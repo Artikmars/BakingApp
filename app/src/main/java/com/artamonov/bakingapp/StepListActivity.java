@@ -3,7 +3,6 @@ package com.artamonov.bakingapp;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +32,17 @@ import java.util.List;
 public class StepListActivity extends AppCompatActivity {
 
     public int stepPosition;
+    public int stepListSize;
     public boolean mTwoPane;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(StepDetailFragment.ARG_ITEM_ID, stepPosition);
+        outState.putInt(StepDetailFragment.ARG_ITEM_ID_LIST_SIZE, stepListSize);
+        Log.e(MainActivity.TAG, "onSaveInstanceState: stepPosition: " + stepPosition
+                + " stepListSize: " + stepListSize);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,7 +52,7 @@ public class StepListActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
-
+        stepListSize = RecipesParser.stepsList.size();
 
         if (findViewById(R.id.step_detail_container) != null) {
             // The detail container view will be present only in the
@@ -52,6 +60,14 @@ public class StepListActivity extends AppCompatActivity {
             // If this view is present, then the
             // activity should be in two-pane mode.
             mTwoPane = true;
+            Log.e(MainActivity.TAG, "mTwoPane: " + true);
+        }
+        Log.e(MainActivity.TAG, "mTwoPane: " + mTwoPane);
+        if (savedInstanceState != null) {
+            stepPosition = savedInstanceState.getInt(StepDetailFragment.ARG_ITEM_ID, 0);
+            stepListSize = savedInstanceState.getInt(StepDetailFragment.ARG_ITEM_ID_LIST_SIZE, 0);
+            Log.e(MainActivity.TAG, "from savedInstanceState: stepPosition" + stepPosition
+                    + " stepListSize: " + stepListSize);
         }
 
         View recyclerView = findViewById(R.id.step_list);
@@ -66,8 +82,12 @@ public class StepListActivity extends AppCompatActivity {
     }
 
     public void goToNextStepTwoPane(View view) {
+       Log.e(MainActivity.TAG, "goToNextStepTwoPane: stepPosition prev:" + stepPosition
+              + " stepListSize: " + stepListSize);
         stepPosition = stepPosition + 1;
-        if (stepPosition <= RecipesParser.stepsList.size()) {
+        Log.e(MainActivity.TAG, "goToNextStepTwoPane: stepPosition = stepPosition + 1; stepPosition:" + stepPosition
+        );
+        if (stepPosition <= stepListSize) {
             Bundle arguments = new Bundle();
             arguments.putInt(StepDetailFragment.ARG_ITEM_ID, stepPosition);
             StepDetailFragment fragment = new StepDetailFragment();
@@ -84,8 +104,12 @@ public class StepListActivity extends AppCompatActivity {
 
 
     public void goToPreviousStepTwoPane(View view) {
+        Log.e(MainActivity.TAG, "goToPreviousStepTwoPane: stepPosition prev:" + stepPosition
+                + " stepListSize: " + stepListSize);
         stepPosition = stepPosition - 1;
-        if (stepPosition <= RecipesParser.stepsList.size() && stepPosition != 1) {
+        Log.e(MainActivity.TAG, "goToPreviousStepTwoPane: stepPosition = stepPosition - 1; stepPosition:" + stepPosition
+              );
+        if (stepPosition <= stepListSize && stepPosition != 1) {
             Bundle arguments = new Bundle();
             arguments.putInt(StepDetailFragment.ARG_ITEM_ID, stepPosition);
             StepDetailFragment fragment = new StepDetailFragment();
@@ -151,9 +175,13 @@ public class StepListActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     if (mTwoPane) {
-                      //  holder.ivPreviousStep.setVisibility(View.INVISIBLE);
-                      //  holder.ivNextStep.setVisibility(View.INVISIBLE);
+                        //  holder.ivPreviousStep.setVisibility(View.INVISIBLE);
+                        //  holder.ivNextStep.setVisibility(View.INVISIBLE);
+                        Log.e(MainActivity.TAG, "onClick: stepPosition prev:" + stepPosition
+                                + " stepListSize: " + stepListSize);
                         stepPosition = position;
+                        Log.e(MainActivity.TAG, "onClick:  stepPosition = position; stepPosition:" + stepPosition
+                              );
                         Bundle arguments = new Bundle();
                         arguments.putInt(StepDetailFragment.ARG_ITEM_ID, position);
                         //arguments.putBoolean(StepDetailFragment.ARG_ITEM_ID, true);
@@ -163,8 +191,9 @@ public class StepListActivity extends AppCompatActivity {
                                 .replace(R.id.step_detail_container, fragment)
                                 .commit();
                     } else {
-                       // holder.ivPreviousStep.setVisibility(View.INVISIBLE);
-                      //  holder.ivNextStep.setVisibility(View.INVISIBLE);
+                        // holder.ivPreviousStep.setVisibility(View.INVISIBLE);
+                        //  holder.ivNextStep.setVisibility(View.INVISIBLE);
+                        stepPosition = position;
                         Intent intent = new Intent(context, StepDetailActivity.class);
                         intent.putExtra(StepDetailFragment.ARG_ITEM_ID, position);
                         intent.putExtra(StepDetailFragment.ARG_MODE, true);
@@ -185,14 +214,10 @@ public class StepListActivity extends AppCompatActivity {
         class ViewHolder extends RecyclerView.ViewHolder {
 
             private final TextView stepShortDescription;
-            private final ImageView ivPreviousStep;
-            private final ImageView ivNextStep;
 
             private ViewHolder(View itemView) {
                 super(itemView);
                 stepShortDescription = itemView.findViewById(R.id.step_short_description);
-                ivPreviousStep = itemView.findViewById(R.id.ivPreviousStepTwoPane);
-                ivNextStep = itemView.findViewById(R.id.ivNextStepTwoPane);
             }
         }
     }
