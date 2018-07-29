@@ -51,11 +51,13 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
     public static final String ARG_MODE = "orientation mode";
     public static final String ARG_ITEM_ID_LIST_SIZE = "step_list_size";
     public static final String ARG_RECIPE_POSITION = "recipe position";
-    private static final String EXO_PLAYER_POSITION = "position";
+    private static final String EXO_PLAYER_POSITION = "player_current_position";
+    private static final String EXO_PLAYER_STATE = "player_state";
     private SimpleExoPlayer exoPlayer;
     private SimpleExoPlayerView playerView;
     private Integer stepPosition;
     private long exoPlayerPosition;
+    private boolean isPlayerPaused;
 
 
     /**
@@ -152,6 +154,7 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
         super.onPause();
         if (exoPlayer != null) {
             exoPlayerPosition = exoPlayer.getCurrentPosition();
+            isPlayerPaused = exoPlayer.getPlayWhenReady();
             exoPlayer.release();
         }
     }
@@ -161,6 +164,7 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(EXO_PLAYER_POSITION, exoPlayerPosition);
+        outState.putBoolean(EXO_PLAYER_STATE, isPlayerPaused);
     }
 
     private void initializePlayer(View view, Uri url, Bundle savedInstanceState) {
@@ -175,6 +179,9 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
             if (savedInstanceState != null) {
                 exoPlayerPosition = savedInstanceState.getLong(EXO_PLAYER_POSITION, C.TIME_UNSET);
                 exoPlayer.seekTo(exoPlayerPosition);
+                exoPlayer.setPlayWhenReady(savedInstanceState.getBoolean(EXO_PLAYER_STATE));
+            } else {
+                exoPlayer.setPlayWhenReady(true);
             }
 
             // Set the ExoPlayer.EventListener to this activity.
@@ -185,7 +192,6 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
             MediaSource mediaSource = new ExtractorMediaSource(url, new DefaultDataSourceFactory(
                     context, userAgent), new DefaultExtractorsFactory(), null, null);
             exoPlayer.prepare(mediaSource);
-            exoPlayer.setPlayWhenReady(true);
         }
     }
 
