@@ -16,7 +16,7 @@
         android:id="@+id/step_detail_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="@dimen/nestedScrollViewMarginTop"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <ImageView
@@ -26,7 +26,7 @@
         android:layout_gravity="bottom"
         android:onClick="goToPreviousStep"
         android:contentDescription="@string/previous_step"
-        android:layout_marginStart="130dp"
+        android:layout_marginStart="@dimen/previousStepMarginStart"
         app:layout_anchor="@+id/step_detail_container"
         app:layout_anchorGravity="bottom"
         app:layout_constraintEnd_toStartOf="@+id/ivNextStep"
@@ -40,7 +40,7 @@
         android:layout_gravity="bottom"
         android:contentDescription="@string/next_step"
         android:onClick="goToNextStep"
-        android:layout_marginStart="190dp"
+        android:layout_marginStart="@dimen/nextStepMarginStart"
         app:layout_anchor="@+id/step_detail_container"
         app:layout_anchorGravity="bottom"
         app:layout_constraintEnd_toEndOf="parent"

@@ -6,7 +6,6 @@ import android.widget.RemoteViewsService.RemoteViewsFactory;
 
 import com.artamonov.bakingapp.data.Recipes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.artamonov.bakingapp.MainActivity.responseJSON;
