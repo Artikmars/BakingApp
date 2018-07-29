@@ -27,6 +27,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import static com.artamonov.bakingapp.StepDetailFragment.ARG_ITEM_ID;
+import static com.artamonov.bakingapp.StepDetailFragment.ARG_ITEM_NAME;
 
 public class MainActivity extends AppCompatActivity implements RecipeRecyclerViewAdapter.ItemClickListener {
 
@@ -149,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements RecipeRecyclerVie
         populateStepsThumbnails(RecipesParser.stepsList);
         Intent intent = new Intent(this, StepListActivity.class);
         intent.putExtra(ARG_ITEM_ID, position);
+        intent.putExtra(ARG_ITEM_NAME, RecipesParser.recipesList.get(position).getRecipeName());
         startActivity(intent);
 
     }

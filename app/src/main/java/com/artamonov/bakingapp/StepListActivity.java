@@ -24,6 +24,7 @@ import java.util.List;
 
 import static com.artamonov.bakingapp.StepDetailFragment.ARG_ITEM_ID;
 import static com.artamonov.bakingapp.StepDetailFragment.ARG_ITEM_ID_LIST_SIZE;
+import static com.artamonov.bakingapp.StepDetailFragment.ARG_ITEM_NAME;
 import static com.artamonov.bakingapp.StepDetailFragment.ARG_RECIPE_POSITION;
 
 
@@ -38,6 +39,7 @@ import static com.artamonov.bakingapp.StepDetailFragment.ARG_RECIPE_POSITION;
 public class StepListActivity extends AppCompatActivity {
 
     public static int recipePosition;
+    public static String recipeName;
     private int stepPosition;
     private int stepListSize;
     private boolean mTwoPane;
@@ -47,6 +49,7 @@ public class StepListActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putInt(ARG_ITEM_ID, stepPosition);
         outState.putInt(ARG_ITEM_ID_LIST_SIZE, stepListSize);
+        outState.putString(ARG_ITEM_NAME, recipeName);
     }
 
     @Override
@@ -72,11 +75,13 @@ public class StepListActivity extends AppCompatActivity {
             stepPosition = savedInstanceState.getInt(StepDetailFragment.ARG_ITEM_ID, 0);
             stepListSize = savedInstanceState.getInt(ARG_ITEM_ID_LIST_SIZE, 0);
             recipePosition = savedInstanceState.getInt(ARG_RECIPE_POSITION, 0);
+            recipeName = savedInstanceState.getString(ARG_ITEM_NAME);
         }
 
         if (getIntent() != null) {
             Intent intent = getIntent();
             recipePosition = intent.getIntExtra(ARG_ITEM_ID, 0);
+            recipeName = intent.getStringExtra(ARG_ITEM_NAME);
         }
 
         View recyclerView = findViewById(R.id.step_list);

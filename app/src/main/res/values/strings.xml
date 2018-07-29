@@ -9,8 +9,6 @@
     <string name="recipe_image">Recipe Image</string>
     <string name="previous_step">Previous Step</string>
     <string name="next_step">Next Step</string>
-
-
     <string name="ingredient_description">%1$s — %2$d %3$s</string>
     <string name="appwidget_text">EXAMPLE</string>
 </resources>

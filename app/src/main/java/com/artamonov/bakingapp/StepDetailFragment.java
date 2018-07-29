@@ -48,6 +48,7 @@ public class StepDetailFragment extends Fragment implements View.OnClickListener
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
+    public static final String ARG_ITEM_NAME = "recipe_name";
     public static final String ARG_MODE = "orientation mode";
     public static final String ARG_ITEM_ID_LIST_SIZE = "step_list_size";
     public static final String ARG_RECIPE_POSITION = "recipe position";
