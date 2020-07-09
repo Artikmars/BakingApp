@@ -7,7 +7,7 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     android:baselineAligned="false"
-    android:divider="?android:attr/dividerHorizontal"
+    android:divider="?attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
     tools:context=".StepListActivity">
@@ -20,7 +20,7 @@
 
 
 
-    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/step_list"
         android:name="com.artamonov.bakingapp.data.StepListFragment"
@@ -29,10 +29,10 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         tools:context="com.artamonov.bakingapp.StepListActivity"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/step_list_content" />
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -69,7 +69,7 @@
             app:layout_constraintTop_toBottomOf="@+id/step_detail_container"
             app:srcCompat="@drawable/round_navigate_next_black_18dp" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
